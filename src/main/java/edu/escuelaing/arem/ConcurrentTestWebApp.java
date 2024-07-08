@@ -8,18 +8,18 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * ConcurrentTestWebApp es una aplicación web básica que utiliza sockets para manejar conexiones HTTP.
- * Escucha en un puerto especificado (predeterminado 4567 o configurable mediante la variable de entorno PORT).
- * Responde con una página HTML simple cuando se establece una conexión.
+ * ConcurrentTestWebApp is a basic web application that uses sockets to handle HTTP connections.
+ * It listens on a specified port (default 4567 or configurable via the PORT environment variable).
+ * Responds with a simple HTML page when a connection is established.
  */
 public class ConcurrentTestWebApp {
     private static final int DEFAULT_PORT = 4567;
 
     /**
-     * Método principal que inicia el servidor.
+     * Main method that starts the server.
      *
-     * @param args Argumentos de línea de comandos (no se utilizan).
-     * @throws IOException Si hay un error al intentar escuchar en el puerto especificado.
+     * @param args Command-line arguments (not used).
+     * @throws IOException If an error occurs while trying to listen on the specified port.
      */
     public static void main(String[] args) throws IOException {
         int port = getPort();
@@ -27,33 +27,33 @@ public class ConcurrentTestWebApp {
         boolean running = true;
         try {
             serverSocket = new ServerSocket(port);
-            System.out.println("Servidor iniciado en el puerto: " + port);
+            System.out.println("Server started on port: " + port);
         } catch (IOException e) {
-            System.err.println("No se pudo escuchar en el puerto: " + port);
+            System.err.println("Could not listen on port: " + port);
             System.exit(1);
         }
         while (running) {
             Socket clientSocket = null;
             try {
-                System.out.println("Listo para recibir ...");
+                System.out.println("Ready to receive...");
                 clientSocket = serverSocket.accept();
             } catch (IOException e) {
-                System.err.println("Error al aceptar la conexión.");
+                System.err.println("Error accepting connection.");
                 System.exit(1);
             }
-            // Abre flujos de entrada y salida para comunicarse con el cliente
+            // Open input and output streams to communicate with the client
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
             String inputLine, outputLine;
-            // Lee la solicitud del cliente línea por línea
+            // Read the client request line by line
             while ((inputLine = in.readLine()) != null) {
-                System.out.println("Recibido: " + inputLine);
-                // Si no hay más datos para leer, termina la lectura
+                System.out.println("Received: " + inputLine);
+                // If no more data to read, end reading
                 if (!in.ready()) {
                     break;
                 }
             }
-            // Prepara la respuesta HTTP con una página HTML básica
+            // Prepare HTTP response with a basic HTML page
             outputLine = "HTTP/1.1 200 OK\r\n"
                     + "Content-Type: text/html\r\n"
                     + "\r\n"
@@ -61,32 +61,32 @@ public class ConcurrentTestWebApp {
                     + "<html>"
                     + "<head>"
                     + "<meta charset=\"UTF-8\">"
-                    + "<title>Título del documento</title>\n"
+                    + "<title>Document Title</title>\n"
                     + "</head>"
                     + "<body>"
-                    + "Mi Sitio Web"
+                    + "My Website"
                     + "</body>"
                     + "</html>";
-            // Envía la respuesta al cliente
+            // Send response to the client
             out.println(outputLine);
-            // Cierra los flujos y el socket del cliente
+            // Close streams and client socket
             out.close();
             in.close();
             clientSocket.close();
         }
-        // Cierra el socket del servidor al finalizar
+        // Close the server socket when finished
         serverSocket.close();
     }
 
     /**
-     * Obtiene el puerto en el que el servidor debe escuchar.
+     * Gets the port on which the server should listen.
      *
-     * @return El puerto configurado mediante la variable de entorno PORT, o el puerto predeterminado (4567) si no está configurado.
+     * @return The port configured via the PORT environment variable, or the default port (4567) if not configured.
      */
     private static int getPort() {
         if (System.getenv("PORT") != null) {
             return Integer.parseInt(System.getenv("PORT"));
         }
-        return DEFAULT_PORT; // devuelve el puerto predeterminado si la variable de entorno "PORT" no está configurada
+        return DEFAULT_PORT; // return default port if PORT environment variable is not configured
     }
 }
