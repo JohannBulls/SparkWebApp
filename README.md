@@ -44,8 +44,8 @@ To compile and run the ConcurrentHttpServer, follow these steps:
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd <repository-directory>
+   git clone https://github.com/JohannBulls/SparkWebApp
+   cd SparkWebApp
    ```
 
 2. Compile the Java files using Maven:
